@@ -1,0 +1,11 @@
+Weidezaun Controller:
+
+Dies Gerät soll folgende Funktionen zur verfügung stellen:
+ * Weidezaun Gerät über IR An- und Abschalten.
+ * Überwachung der Batteriespannung. 
+ * Anzeige der Batteriespannung auf Text-Display.
+ * Weidezaungerät Abklemmen, wenn Batteriespannung zu niedrig
+
+Berechnungen:
+Bistabieles Ralaise: Schaltspannung: 5V, Spulenwiederstand: 125 Ohm -> Schaltstrom: ~40mA 
+
