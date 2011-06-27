@@ -7,5 +7,14 @@ Dies Gerät soll folgende Funktionen zur verfügung stellen:
  * Weidezaungerät Abklemmen, wenn Batteriespannung zu niedrig
 
 Berechnungen:
-Bistabieles Ralaise: Schaltspannung: 5V, Spulenwiederstand: 125 Ohm -> Schaltstrom: ~40mA 
+
+Bistabieles Ralaise: DE-L2-5V  
+5.0 V  (Nominal voltage), 
+3.5 V  (Set-/Reset-voltage), 
+125 Ω  (±10% - Coil resistance),
+ 40 mA (±10% - Nominal operating current) 
+200 mW (Nominal operating power), 
+6.5 V  (Max. allowable DC voltage)
+
+Schaltspannung: 5V, Spulenwiederstand: 125 Ohm -> Schaltstrom: ~40mA 
 
