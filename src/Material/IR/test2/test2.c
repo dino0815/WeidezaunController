@@ -49,7 +49,7 @@ SIGNAL (SIG_OVERFLOW0){
     if( ( !(tmp & 0x4000) && (tmp & 0x2000) ) )	// only if 14 bits received
       rc5_data = tmp;
     else 
-      uart_put_char('.');
+//      uart_put_char('.');
     tmp = 0;
   }
 
@@ -58,10 +58,11 @@ SIGNAL (SIG_OVERFLOW0){
 
     if( rc5_time < PULSE_MIN ){			// to short
       tmp = 0;
-      uart_put_char('X');}
+      uart_put_char('X');
+    }
 
     if( !tmp || rc5_time > PULSE_1_2 ){		// start or long pulse time
-      uart_put_char('o');
+//      uart_put_char('o');
       if( !(tmp & 0x4000) ){			// not to many bits
         uart_put_char('1');
         tmp <<= 1;				// shift
