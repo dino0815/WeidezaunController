@@ -8,11 +8,14 @@
 #define uchar unsigned char
 #define uint unsigned int
 
-#define	BAUD	19200
+//#define	BAUD	19200
+#define	BAUD	2400
 #define bauddivider (uint)(F_CPU / BAUD / 16 - 0.5)
 
-#define	xRC5_IN		PIND
-#define	xRC5		PD3			// IR input low active
+//#define	xRC5_IN		PIND
+//#define	xRC5		PD3			// IR input low active
+#define	xRC5_IN		PINC
+#define	xRC5		PD0			// IR input low active
 
 #define RC5TIME 	1.778e-3		// 1.778msec
 #define PULSE_MIN	(uchar)(F_CPU / 512 * RC5TIME * 0.4 + 0.5)
@@ -43,22 +46,28 @@ SIGNAL (SIG_OVERFLOW0){
   TCNT0 = -2;					// 2 * 256 = 512 cycle
 
   if( ++rc5_time > PULSE_MAX ){			// count pulse time
-    if( !(tmp & 0x4000) && tmp & 0x2000 )	// only if 14 bits received
+    if( ( !(tmp & 0x4000) && (tmp & 0x2000) ) )	// only if 14 bits received
       rc5_data = tmp;
     else 
-      uart_put_char('E');
+      uart_put_char('.');
     tmp = 0;
   }
 
   if( (rc5_bit ^ xRC5_IN) & 1<<xRC5 ){		// change detect
     rc5_bit = ~rc5_bit;				// 0x00 -> 0xFF -> 0x00
 
-    if( rc5_time < PULSE_MIN )			// to short
+    if( rc5_time < PULSE_MIN ){			// to short
       tmp = 0;
+      uart_put_char('X');}
 
     if( !tmp || rc5_time > PULSE_1_2 ){		// start or long pulse time
-      if( !(tmp & 0x4000) )			// not to many bits
+      uart_put_char('o');
+      if( !(tmp & 0x4000) ){			// not to many bits
+        uart_put_char('1');
         tmp <<= 1;				// shift
+      }else{
+        uart_put_char('2');
+      }
       if( !(rc5_bit & 1<<xRC5) )		// inverted bit
         tmp |= 1;				// insert new bit
       rc5_time = 0;				// count next pulse time
