@@ -45,6 +45,8 @@ SIGNAL (SIG_OVERFLOW0){
   if( ++rc5_time > PULSE_MAX ){			// count pulse time
     if( !(tmp & 0x4000) && tmp & 0x2000 )	// only if 14 bits received
       rc5_data = tmp;
+    else 
+      uart_put_char('E');
     tmp = 0;
   }
 
