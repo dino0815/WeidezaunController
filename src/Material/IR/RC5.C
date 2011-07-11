@@ -6,22 +6,30 @@
 /*                      danni@specs.de                                  */
 /*                                                                      */
 /************************************************************************/
-#include "main.h"
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <stdlib.h>
+
+#define uchar unsigned char
+#define uint unsigned int
+
+#define	xRC5_IN		PIND
+#define	xRC5		PD3			// IR input low active
+
+extern uint	rc5_data;				// store result
 
 #define RC5TIME 	1.778e-3		// 1.778msec
-#define PULSE_MIN	(uchar)(XTAL / 512 * RC5TIME * 0.4 + 0.5)
-#define PULSE_1_2	(uchar)(XTAL / 512 * RC5TIME * 0.8 + 0.5)
-#define PULSE_MAX	(uchar)(XTAL / 512 * RC5TIME * 1.2 + 0.5)
 
+#define PULSE_MIN	(uchar)(F_CPU / 512 * RC5TIME * 0.4 + 0.5)
+#define PULSE_1_2	(uchar)(F_CPU / 512 * RC5TIME * 0.8 + 0.5)
+#define PULSE_MAX	(uchar)(F_CPU / 512 * RC5TIME * 1.2 + 0.5)
 
 uchar	rc5_bit;				// bit value
 uchar	rc5_time;				// count bit time
 uint	rc5_tmp;				// shift bits in
 uint	rc5_data;				// store result
 
-
-SIGNAL (SIG_OVERFLOW0)
-{
+SIGNAL (SIG_OVERFLOW0){
   uint tmp = rc5_tmp;				// for faster access
 
   TCNT0 = -2;					// 2 * 256 = 512 cycle

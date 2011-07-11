@@ -6,25 +6,31 @@
 /*                      danni@specs.de                                  */
 /*                                                                      */
 /************************************************************************/
-#include "main.h"
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <stdlib.h>
 
+#define uchar unsigned char
+#define uint unsigned int
 
-void putchar( char c )
-{
+#define	BAUD	19200
+#define bauddivider (uint)(F_CPU / BAUD / 16 - 0.5)
+
+extern uint	rc5_data;				// store result
+
+void uart_put_char( char c ){
   while( (UCSRA & 1<<UDRE) == 0 );
   UDR = c;
 }
 
 
-void puts( char *s )
-{
+void uart_put_string( char *s ){
   while( *s )
-    putchar( *s++ );
+    uart_put_char( *s++ );
 }
 
 
-int main( void )
-{
+int main( void ){
   uint i;
   char s[30];
 
@@ -38,7 +44,7 @@ int main( void )
   UCSRB = 1<<RXEN^1<<TXEN;		//enable RX, TX
 
   sei();
-  puts( "RC5-Dekoder:\n\r" );
+  uart_put_string( "RC5-Dekoder:\n\r" );
   for(;;){				// main loop
     cli();
     i = rc5_data;			// read two bytes from interrupt !
@@ -46,14 +52,14 @@ int main( void )
     sei();
     if( i ){
       DDRB = i;				// LED output
-      putchar(( i >> 11 & 1) + '0');	// Toggle Bit
-      putchar(' ');
+      uart_put_char(( i >> 11 & 1) + '0');	// Toggle Bit
+      uart_put_char(' ');
       itoa( i >> 6 & 0x1F, s, 10);	// Device address
-      puts( s );
-      putchar(' ');
+      uart_put_string( s );
+      uart_put_char(' ');
       itoa((i & 0x3F) | (~i >> 7 & 0x40), s, 10); // Key Code
-      puts( s );
-      puts( "\n\r" );
+      uart_put_string( s );
+      uart_put_string( "\n\r" );
     }
   }
 }
