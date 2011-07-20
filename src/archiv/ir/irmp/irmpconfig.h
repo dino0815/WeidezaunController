@@ -43,17 +43,17 @@
  */
 
 //      Protocol                                Enable  Remarks                 F_INTERRUPTS            Program Space
-#define IRMP_SUPPORT_SIRCS_PROTOCOL             0       // Sony SIRCS           >= 10000                 ~100 bytes
+#define IRMP_SUPPORT_SIRCS_PROTOCOL             1       // Sony SIRCS           >= 10000                 ~100 bytes
 #define IRMP_SUPPORT_NEC_PROTOCOL               1       // NEC + APPLE          >= 10000                 ~250 bytes
-#define IRMP_SUPPORT_SAMSUNG_PROTOCOL           0       // Samsung + Samsung32  >= 10000                 ~250 bytes
-#define IRMP_SUPPORT_MATSUSHITA_PROTOCOL        0       // Matsushita           >= 10000                  ~50 bytes
-#define IRMP_SUPPORT_KASEIKYO_PROTOCOL          0       // Kaseikyo             >= 10000                 ~250 bytes
-#define IRMP_SUPPORT_DENON_PROTOCOL             0       // DENON, Sharp         >= 10000                 ~250 bytes
-#define IRMP_SUPPORT_JVC_PROTOCOL               0       // JVC                  >= 10000                 ~250 bytes
+#define IRMP_SUPPORT_SAMSUNG_PROTOCOL           1       // Samsung + Samsung32  >= 10000                 ~250 bytes
+#define IRMP_SUPPORT_MATSUSHITA_PROTOCOL        1       // Matsushita           >= 10000                  ~50 bytes
+#define IRMP_SUPPORT_KASEIKYO_PROTOCOL          1       // Kaseikyo             >= 10000                 ~250 bytes
+#define IRMP_SUPPORT_DENON_PROTOCOL             1       // DENON, Sharp         >= 10000                 ~250 bytes
+#define IRMP_SUPPORT_JVC_PROTOCOL               1       // JVC                  >= 10000                 ~250 bytes
 #define IRMP_SUPPORT_RC5_PROTOCOL               1       // RC5                  >= 10000                 ~250 bytes
-#define IRMP_SUPPORT_RC6_PROTOCOL               0       // RC6 & RC6A           >= 10000                 ~200 bytes
-#define IRMP_SUPPORT_GRUNDIG_PROTOCOL           0       // Grundig              >= 10000                 ~150 bytes
-#define IRMP_SUPPORT_NOKIA_PROTOCOL             0       // Nokia                >= 10000                 ~150 bytes
+#define IRMP_SUPPORT_RC6_PROTOCOL               1       // RC6 & RC6A           >= 10000                 ~200 bytes
+#define IRMP_SUPPORT_GRUNDIG_PROTOCOL           1       // Grundig              >= 10000                 ~150 bytes
+#define IRMP_SUPPORT_NOKIA_PROTOCOL             1       // Nokia                >= 10000                 ~150 bytes
 #define IRMP_SUPPORT_NUBERT_PROTOCOL            0       // NUBERT               >= 10000                  ~50 bytes
 #define IRMP_SUPPORT_BANG_OLUFSEN_PROTOCOL      0       // Bang & Olufsen       >= 10000                 ~200 bytes
 #define IRMP_SUPPORT_NIKON_PROTOCOL             0       // NIKON                >= 10000                 ~250 bytes
@@ -68,13 +68,17 @@
  *---------------------------------------------------------------------------------------------------------------------------------------------------
  */
 #ifdef PIC_CCS_COMPILER                                 // PIC CCS Compiler:
-    #define IRMP_PIN                                PIN_B4  // use PB4 as IR input on PIC
+
+#define IRMP_PIN                                PIN_B4  // use PB4 as IR input on PIC
+
 #else                                                   // AVR:
-    #define IRMP_PORT                               PORTC
-    #define IRMP_DDR                                DDRC
-    #define IRMP_PIN                                PINC
-    #define IRMP_BIT                                0       // use PB6 as IR input on AVR
-    #define input(x)                                ((x) & (1 << IRMP_BIT))
+
+#define IRMP_PORT                               PORTB
+#define IRMP_DDR                                DDRB
+#define IRMP_PIN                                PINB
+#define IRMP_BIT                                6       // use PB6 as IR input on AVR
+
+#define input(x)                                ((x) & (1 << IRMP_BIT))
 #endif
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------------

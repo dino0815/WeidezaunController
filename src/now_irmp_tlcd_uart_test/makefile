@@ -9,8 +9,11 @@
   F_CPU = 8000000    # Main Oscillator Frequency
 
   # Target file name (without extension).
-  TARGET = test168
-  SRC = $(TARGET).c irmp.c# Quellcode Datein
+  TARGET = test
+  SRC  = $(TARGET).c 
+  SRC += irmp.c# Quellcode Datein
+  SRC += uart.c# Quellcode Datein
+  SRC += tlcd.c# Quellcode Datein
 
   AVRDUDE_PROGRAMMER = USBasp 
   AVRDUDE_PORT = /dev/ttyUSB0  # programmer connected to USB
@@ -24,7 +27,7 @@
 
   CFLAGS = -O$(OPT)
   CFLAGS += -Wall -Wstrict-prototypes
-  CFLAGS += -DF_CPU=$(F_CPU)
+  CFLAGS += -DF_CPU=$(F_CPU) -DBAUD=$(BAUD)
 
   ALL_CFLAGS = -mmcu=$(MCU) -I. $(CFLAGS) $(GENDEPFLAGS)
   ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
@@ -50,7 +53,6 @@
 #  obj: $(OBJ)
 #  elf: $(TARGET).elf
   hex: $(TARGET).hex
-	  $(SIZE) --target=$(FORMAT) $(TARGET).hex
 
   program: $(TARGET).hex
 	  $(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM)

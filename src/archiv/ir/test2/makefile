@@ -5,12 +5,12 @@
   # make program = Download the hex file to the device, using avrdude.
   # make clean; make all = To rebuild the project
   #############################################################################
-  MCU   = atmega168   #  Mikrocontroller
-  F_CPU = 8000000    # Main Oscillator Frequency
+  MCU   = atmega8   #  Mikrocontroller
+  F_CPU = 4000000    # Main Oscillator Frequency
 
   # Target file name (without extension).
-  TARGET = test168
-  SRC = $(TARGET).c irmp.c# Quellcode Datein
+  TARGET = test2
+  SRC = $(TARGET).c # Quellcode Datein
 
   AVRDUDE_PROGRAMMER = USBasp 
   AVRDUDE_PORT = /dev/ttyUSB0  # programmer connected to USB
@@ -50,7 +50,6 @@
 #  obj: $(OBJ)
 #  elf: $(TARGET).elf
   hex: $(TARGET).hex
-	  $(SIZE) --target=$(FORMAT) $(TARGET).hex
 
   program: $(TARGET).hex
 	  $(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM)

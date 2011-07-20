@@ -1,21 +1,27 @@
 /************************************************************************/
-/*                                                                      */
-/************************************************************************/
- 
+/* Test Uart Modul (Echo Funktion)
+/* default:   19200 Baud 8N1   
+/* Processor: ATMEGA 8
+/* CLOCK:     16 MHz
+/* Version:   0.3 
+/************************************************************************/ 
 #include <stdlib.h>
-
 #include <inttypes.h>
 #include <avr/io.h>
-#include <util/delay.h>
-#include <avr/pgmspace.h>
+#include <util/delay.h> // delay funktionen
+#include <avr/pgmspace.h> // In internen EEPROM schreiben
 #include <avr/interrupt.h>
+//#include <avr/wdt.h>  //Watchdoc
+#include "uart.h"
+#include "tlcd.h"
 #include "irmp.h"
 #include "irmpconfig.h"
 
 #define uchar unsigned char
 #define uint unsigned int
-
-//#define IRMP_LOGGING  1
+typedef unsigned char byte;
+typedef unsigned char uint8;
+typedef unsigned int  uint16;
 
 #ifndef F_CPU
     #error F_CPU unkown
@@ -25,6 +31,24 @@
 #define bauddivider (uint)(F_CPU / BAUD / 16 - 0.5)
 
 char s[30];
+
+//////////////////////////////////////////////////////////////////////////////
+void init_ports(void){
+    /* initialize ports */
+//    DDRA = 0xFF;
+    DDRB = 0xFF;
+    DDRC = 0xFF;
+    DDRD = 0xFF;
+//    PORTA = 0x00;
+    PORTB = 0x00;
+    PORTC = 0x00;
+    PORTD = 0x00;
+}//end init_ports()
+
+//////////////////////////////////////////////////////////////////////////////
+void delay(long int count){
+  while(count > 0){count--;}
+}//end delay() 
 
 //////////////////////////////////////////////////////////////////////////7
 void uart_put_char( char c ){
@@ -45,18 +69,13 @@ void uart_put_string( char *s ){
 
 //////////////////////////////////////////////////////////////////////////7
 void uart_put_hex( uchar b ){
-/*  uart_put_char('0');
-  uart_put_char('x');
-  uart_put_char(((b & 0xF0)>>4)+'0');
-  uart_put_char('0'+(b & 0x0F));
-*/
-//  itoa(b,s,25);
-s[0] = '0';
-s[1] = 'x';
-s[2] = (((b & 0xF0)>>4)+'0');
-s[3] = ('0'+(b & 0x0F));
-s[4] = 0;
-  uart_put_string(s);
+    //  itoa(b,s,25);
+    s[0] = '0';
+    s[1] = 'x';
+    s[2] = (((b & 0xF0)>>4)+'0');
+    s[3] = ('0'+(b & 0x0F));
+    s[4] = 0;
+    uart_put_string(s);
 }
 
 //////////////////////////////////////////////////////////////////////////7
@@ -78,6 +97,9 @@ ISR(TIMER1_COMPA_vect){
 
 //////////////////////////////////////////////////////////////////////////7
 int main( void ){
+   init_ports();    
+   uart_init();
+   tlcd_init4bit();  
 //  TCCR0 = 1<<CS02;			//divide by 256
 //  TIMSK = 1<<TOIE0;			//enable timer interrupt
 #if defined (__AVR_ATmega8__) || defined (__AVR_ATmega16__) || defined (__AVR_ATmega32__) || defined (__AVR_ATmega64__) || defined (__AVR_ATmega162__) 

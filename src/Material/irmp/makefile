@@ -9,8 +9,9 @@
   F_CPU = 8000000    # Main Oscillator Frequency
 
   # Target file name (without extension).
-  TARGET = test168
-  SRC = $(TARGET).c irmp.c# Quellcode Datein
+  TARGET = test
+  SRC = $(TARGET).c 
+  SRC += irmp.c# Quellcode Datein
 
   AVRDUDE_PROGRAMMER = USBasp 
   AVRDUDE_PORT = /dev/ttyUSB0  # programmer connected to USB
