@@ -3,26 +3,28 @@
 
 #include <avr/io.h>
 #include <inttypes.h>
-#include "legacy_mega.h"
+//#include "legacy_mega.h"
 
 //#define uchar unsigned char
 //#define uint unsigned int
 //#define byte unsigned char
 //#define uint8 unsigned char
-//#define uint16 unsigned int
-#define uint16 uint16_t
+#define uint16 unsigned int
+//#define uint16 uint16_t
 
 #ifndef F_CPU
     #error F_CPU is not defined
+    #warning F_CPU is not set ... Now set to 8000000
+    #define F_CPU  8000000 // timer clock 8Mhz
 #endif
-//  #define F_CPU  16000000 // timer clock 16Mhz
 
 #ifndef BAUD
     #error BAUD is not defined
+    #warning BAUD is not defined ... Now set to 19200
+    #define BAUD	19200
 #endif
-//  #define BAUD	19200
 
-#define bauddivider (uint16)(F_CPU / BAUD / 16 - 0.5)
+#define bauddivider (uint16_t)(F_CPU / BAUD / 16 - 0.5)
 
 void uart_init(void);
 char uart_check_byte(void); // Prüft und gibt sonst Null zurück

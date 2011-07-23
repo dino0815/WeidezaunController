@@ -7,6 +7,7 @@
   #############################################################################
   MCU   = atmega168   #  Mikrocontroller
   F_CPU = 8000000    # Main Oscillator Frequency
+  BAUD  = 19200     # Uart Baudrate
 
   # Target file name (without extension).
   TARGET = test
@@ -53,6 +54,8 @@
 #  obj: $(OBJ)
 #  elf: $(TARGET).elf
   hex: $(TARGET).hex
+	  $(HEXSIZE)
+#	  $(SIZE) --target=$(FORMAT) $(TARGET).hex
 
   program: $(TARGET).hex
 	  $(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM)

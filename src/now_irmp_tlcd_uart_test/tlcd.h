@@ -17,9 +17,10 @@
 
 void tlcd_init4bit(void); //DBUS:4bit 
 void tlcd_init8bit(void); //DBUS:8bit
-void tlcd_putChar(char c);  
-void tlcd_putString(char* s);  
-void tlcd_putCommand(byte b); 
+void tlcd_put_char(char c);  
+void tlcd_put_hex(char b);
+void tlcd_put_string(char* s);  
+void tlcd_put_command(byte b); 
 
 void tlcd_ON(void); 
 void tlcd_OFF(void); 
@@ -34,8 +35,8 @@ void tlcd_DisplayShift_OFF(void);
 void tlcd_Direction_Left(void); 
 void tlcd_Direction_Right(void); 
 
-void tlcd_Clear(void); 
-void tlcd_setPosition(short int zeile,short int pos); 
+void tlcd_clear(void); 
+void tlcd_set_position(short int zeile,short int pos); 
 
 #endif
 

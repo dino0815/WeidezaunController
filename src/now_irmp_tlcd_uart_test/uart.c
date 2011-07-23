@@ -7,61 +7,51 @@
  *********************************************************************/
 #include "uart.h"
 
+//*********************************************************************//
 void uart_init(void){
+#if defined (__AVR_ATmega8__) || defined (__AVR_ATmega16__) || defined (__AVR_ATmega32__) || defined (__AVR_ATmega64__) || defined (__AVR_ATmega162__) 
   UBRRL = bauddivider;			            // set baud rate
   UBRRH = bauddivider >> 8;                 // set baud rate
   UCSRA = 0;				                // no U2X, MPCM
   UCSRC = 1<<URSEL | 1<<UCSZ1 | 1<<UCSZ0;	// No Parity | 1 Stop Bit | 8 Data Bit
-  UCSRB = 1<<RXEN  | 1<<TXEN |	1<<RXCIE;// | 1<<TXCIE;//enable RX, TX and interr.
+  UCSRB = 1<<RXEN  | 1<<TXEN;  // |	1<<RXCIE;// | 1<<TXCIE;  //enable RX, TX and interr.
+#else // (ATmega48, ATmega88, ATmega168, ATmega328, ATmega644)
+  UBRR0L = bauddivider;      // set baud rate
+  UBRR0H = bauddivider >> 8; // set baud rate
+  UCSR0A = 0;                // no U2X, MPCM
+  UCSR0C = 1<<UCSZ01 | 1<<UCSZ00;	// No Parity | 1 Stop Bit | 8 Data Bit
+  UCSR0B = 1<<RXEN0  | 1<<TXEN0; // |	1<<RXCIE0;// | 1<<TXCIE;//enable RX, TX and interr.
+#endif  // __AVR...
 }
 //*********************************************************************//
-//void uart_init(void){
-#if 0 //defined (__AVR_ATmega8__) || defined (__AVR_ATmega16__) || defined (__AVR_ATmega32__) || defined (__AVR_ATmega64__) || defined (__AVR_ATmega162__) 
-  UBRRL = bauddivider;			            // set baud rate
-  UBRRH = bauddivider >> 8;                 // set baud rate
-  UCSRA = 0;				                // no U2X, MPCM
-  UCSRC = 1<<URSEL | 1<<UCSZ1 | 1<<UCSZ0;	// No Parity | 1 Stop Bit | 8 Data Bit
-  UCSRB = 1<<RXEN  | 1<<TXEN;  
-  // |	1<<RXCIE;// | 1<<TXCIE;  //enable RX, TX and interr.
-//#else
-  UBRR0L = bauddivider;			//set baud rate
-  UBRR0H = bauddivider >> 8;
-  UCSR0A=0x00;
-  UCSR0B=0x08;
-  UCSR0C=0x06;
-#endif  // __AVR...
-//}
-//*********************************************************************//
 char uart_check_char(void){
-  //IF(Byte Empfangen)THEN RETURN Byte ELSE RETURN 0x00
-  return (UCSRA & 0x80) ? UDR : 0x00;
+  return (UCSR0A & 0x80) ? UDR0 : 0x00;    //IF(Byte Empfangen)THEN RETURN Byte ELSE RETURN 0x00
 }
 //*********************************************************************//
 char uart_get_char(void){
-   while(!(UCSRA & 0x80)); // wait for received byte
-   return UDR;
+   while(!(UCSR0A & 0x80)); // wait for received byte
+   return UDR0;
 }
 //*********************************************************************//
 void uart_put_char(char c){
-  while( (UCSRA & 1<<UDRE) == 0 ){;}
-  UDR = c;
+  while( (UCSR0A & 1<<UDRE0) == 0 ){;}
+  UDR0 = c;
 }
 //*********************************************************************//
 void uart_put_string(char *s){
   while(*s) uart_put_char(*s++);
 }
-
 //////////////////////////////////////////////////////////////////////////7
 void uart_put_hex( char b ){
-    //  itoa(b,s,25);
-    s[0] = '0';
-    s[1] = 'x';
-    s[2] = (((b & 0xF0)>>4)+'0');
-    s[3] = ('0'+(b & 0x0F));
-    s[4] = 0;
-    uart_put_string(s);
+    // obere 4 bit:
+    char temp = ((b >> 4) & 0x0F);
+    if(temp < 10) uart_put_char(temp +'0');
+    else     uart_put_char(temp + '0' + 7);
+    // untere 4 bit:
+    temp = (b & 0x0F);
+    if(temp < 10) uart_put_char(temp +'0');
+    else     uart_put_char(temp + '0' + 7);
 }
-
 //********************************************************************//
 /*
 void uart_get_string(char* erg, const unsigned char max){

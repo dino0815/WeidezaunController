@@ -67,22 +67,18 @@
  * Change hardware pin here:
  *---------------------------------------------------------------------------------------------------------------------------------------------------
  */
-#ifdef PIC_CCS_COMPILER                                 // PIC CCS Compiler:
-    #define IRMP_PIN                                PIN_B4  // use PB4 as IR input on PIC
-#else                                                   // AVR:
     #define IRMP_PORT                               PORTC
     #define IRMP_DDR                                DDRC
     #define IRMP_PIN                                PINC
-    #define IRMP_BIT                                0       // use PB6 as IR input on AVR
+    #define IRMP_BIT                                0       
     #define input(x)                                ((x) & (1 << IRMP_BIT))
-#endif
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------------
  * Set IRMP_LOGGING to 1 if want to log data to UART with 9600Bd
  *---------------------------------------------------------------------------------------------------------------------------------------------------
  */
 #ifndef IRMP_LOGGING
-#define IRMP_LOGGING                            0       // 1: log IR signal (scan), 0: do not (default)
+    #define IRMP_LOGGING                            0       // 1: log IR signal (scan), 0: do not (default)
 #endif
 
 #if IRMP_SUPPORT_SIEMENS_PROTOCOL == 1 && F_INTERRUPTS < 15000
