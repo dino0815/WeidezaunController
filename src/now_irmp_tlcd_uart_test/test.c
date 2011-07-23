@@ -1,5 +1,5 @@
 /************************************************************************
- * Test IRMP mit Uart und TLCD Modul
+ * Test IRMP mit Uart und TLCD Modul   ...//fence_ = Umzänung
  * Processor: ATMEGA 168
  * CLOCK:     8 MHz
  * Version:   0.2 
@@ -25,23 +25,37 @@
 //typedef unsigned char uint8;
 //typedef unsigned int  uint16;
 
-#define IR_NEC                        2              // NEC, Pioneer, JVC, Toshiba, NoName etc.
-#define IR_RC5                        7              // Philips etc
-//char s[30];
+#define RELAIS_PORT     PORTC
+#define RELAIS_DDR      DDRC
+#define RELAIS_ON_BIT   PC4       
+#define RELAIS_OFF_BIT  PC5       
+
+#define ADC_DDR      DDRC
+#define ADC_BIT      PC0       
+#define IR_NEC       2              // NEC, Pioneer, JVC, Toshiba, NoName etc.
+#define IR_RC5       7              // Philips etc
 static char *Proto[]={"SIRCS","NEC","SAMSUNG","MATSUSH","KASEIKYO","RECS80","RC5","DENON","RC6","SAMSG32","APPLE","RECS80X","NUBERT","B&O","GRUNDIG","NOKIA","SIEMENS","FDC","RCCAR","JVC","RC6A"};
 IRMP_DATA irmp_data;
 
 //////////////////////////////////////////////////////////////////////////////
 void init_ports(void){
-    /* initialize ports */
-//    DDRA = 0xFF;
-    DDRB = 0xFF;
-    DDRC = 0xFF;
-    DDRD = 0xFF;
-//    PORTA = 0x00;
-    PORTB = 0x00;
-    PORTC = 0x00;
-    PORTD = 0x00;
+  /* initialize ports */
+  //DDRA = 0xFF;
+  DDRB = 0xFF;
+  DDRC = 0xFF;
+  DDRD = 0xFF;
+  //PORTA = 0x00;
+  PORTB = 0x00;
+  PORTC = 0x00;
+  PORTD = 0x00;
+    
+  //Init Relais-Port
+  RELAIS_DDR  |= ((1<<RELAIS_ON_BIT)|(1<<RELAIS_ON_BIT));  // setze Pin als Ausgang! 
+    
+  //  ADC_DDR =  TODO
+    
+  //IR_PORT wird in irmpconfig.h eingestellt und in irmp_init() gesetzt
+
 }//end init_ports()
 
 ///////////////////////////////////////////////////////////////////////////
@@ -102,21 +116,27 @@ void main( void ){
           tlcd_put_string("Zaun "); 
           tlcd_set_position(2,0);
           tlcd_put_string(" ON  "); 
-          uart_put_string("Commando; RC5, 8, 0x20 erkannt! ;)");
+          uart_put_string("Zaun Einschalten!\r\n");
+          RELAIS_PORT  = RELAIS_PORT | (1<<RELAIS_ON_BIT);
+          _delay_ms(250);
+          RELAIS_PORT  = RELAIS_PORT & ~(1<<RELAIS_ON_BIT);
 
         }else if(ir_data(IR_RC5,0x08,0x21,0)){
           tlcd_set_position(1,0);
           tlcd_put_string("Zaun "); 
           tlcd_set_position(2,0);
           tlcd_put_string(" OFF "); 
-          uart_put_string("Commando; RC5, 8, 0x21 erkannt! ;)");
+          uart_put_string("Zaun Ausschalten!\r\n");
+          RELAIS_PORT  = RELAIS_PORT | (1<<RELAIS_OFF_BIT);
+          _delay_ms(250);
+          RELAIS_PORT  = RELAIS_PORT & ~(1<<RELAIS_OFF_BIT);
 
         }else if(ir_data(IR_RC5,0x00,0x11,0)){
           tlcd_set_position(1,0);
           tlcd_put_string("Batt."); 
           tlcd_set_position(2,0);
           tlcd_put_string("-----"); 
-          uart_put_string("Commando; RC5, 0, 0x11 erkannt! ;)");
+          uart_put_string("Spannungsmassung noch nicht implementiert!\r\n");
 
         }else{
           // Gibt erkanntes IR-Paket auf TextDisplay aus: 

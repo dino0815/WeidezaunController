@@ -67,10 +67,10 @@
  * Change hardware pin here:
  *---------------------------------------------------------------------------------------------------------------------------------------------------
  */
-    #define IRMP_PORT                               PORTC
-    #define IRMP_DDR                                DDRC
-    #define IRMP_PIN                                PINC
-    #define IRMP_BIT                                0       
+    #define IRMP_PORT                               PORTD
+    #define IRMP_DDR                                DDRD
+    #define IRMP_PIN                                PIND
+    #define IRMP_BIT                                PD2       
     #define input(x)                                ((x) & (1 << IRMP_BIT))
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------------
