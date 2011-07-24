@@ -12,6 +12,7 @@
 #include <avr/interrupt.h>
 //#include <avr/wdt.h>  //Watchdoc
 #include "uart.h"
+#include "adc.h"
 #include "tlcd.h"
 #include "irmp.h"
 #include "irmpconfig.h"
@@ -86,10 +87,11 @@ char ir_data(char codec, int add, int com, char flag){
 ///////////////////////////////////////////////////////////////////////////
 void main( void ){
   init_ports();    
+  adc_init();
   uart_init();
-  tlcd_init4bit();  
   irmp_init();                                                              // initialize rc5
   timer_init();                                                             // initialize timer
+  tlcd_init4bit();  
 
   // Das 1x10 Display läuft als zweizeiliges Display mit je 5 Zeichen.
   tlcd_set_position(1,0);
@@ -103,8 +105,30 @@ void main( void ){
   #endif
 
   sei ();                                                                   // enable interrupts
+
+  int new_adc = 0;
+  int old_adc = 1;
+  adc_start1(0);
+  
   while(1){				// main loop
-    if (irmp_get_data (&irmp_data) && irmp_data.flags == 0){
+    if( !(ADCSRA & (1<<ADSC)) ){
+      new_adc = ADCW;                    // ADC auslesen und zurückgeben
+      adc_start1(0);
+    }//end if adc-Messung beendet
+    
+    if(new_adc != old_adc){
+      old_adc = new_adc;
+      tlcd_set_position(1,0);
+      tlcd_put_string("adc: "); 
+      tlcd_set_position(2,0);
+      tlcd_put_string(" 0x"); 
+      tlcd_put_hex(new_adc); 
+      uart_put_string("Neuer ADC-Wert: 0x");
+      uart_put_hex(new_adc); 
+      uart_put_string("\r\n");
+    }//end 
+    
+    if(irmp_get_data (&irmp_data) && irmp_data.flags == 0){
       // ir signal decoded, do something here...
       // irmp_data.protocol is the protocol, see irmp.h
       // irmp_data.address is the address/manufacturer code of ir sender

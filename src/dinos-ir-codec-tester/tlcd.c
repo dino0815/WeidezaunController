@@ -195,14 +195,10 @@ void tlcd_put_string(char* s){
 
 //////////////////////////////////////////////////////////////////////////7
 void tlcd_put_hex( char b ){
-    // obere 4 bit:
-    char temp = ((b >> 4)& 0x0F);
-    if(temp < 10) tlcd_put_char(temp +'0');
-    else     tlcd_put_char(temp + '0' + 7);
-    // untere 4 bit:
-    temp = (b & 0x0F);
-    if(temp < 10) tlcd_put_char(temp +'0');
-    else     tlcd_put_char(temp + '0' + 7);
+    tlcd_put_char('0');
+    tlcd_put_char('x');
+    tlcd_put_char(((b >> 4)& 0x0F)+'0');
+    tlcd_put_char((b & 0x0F)+'0');
 }
 
 ////////////////////////////////////////////////////////////////////////

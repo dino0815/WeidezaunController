@@ -1,4 +1,6 @@
-#ifndef TLCD_H  //HD44780 
+//HD44780 
+
+#ifndef TLCD_H
 #define TLCD_H
 #include <avr/io.h>
 #include <inttypes.h>

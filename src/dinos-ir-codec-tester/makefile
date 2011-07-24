@@ -15,7 +15,6 @@
   SRC += irmp.c# Quellcode Datein
   SRC += uart.c# Quellcode Datein
   SRC += tlcd.c# Quellcode Datein
-  SRC += adc.c # Quellcode Datein
 
   AVRDUDE_PROGRAMMER = USBasp 
   AVRDUDE_PORT = /dev/ttyUSB0  # programmer connected to USB
